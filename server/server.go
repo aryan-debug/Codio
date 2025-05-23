@@ -9,3 +9,5 @@ type Server struct {
 func InitServer() Server {
 	return Server{http.NewServeMux()}
 }
+
+func 
