@@ -13,13 +13,11 @@ var LanguageImageMap = map[Language]string{
 }
 
 type JobResult struct {
-	ID     string
 	Output string
 	Error  error
 }
 
 type Job struct {
-	ID       string
 	Language Language
 	Code     string
 }

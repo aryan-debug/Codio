@@ -33,8 +33,7 @@ func (manager *containerManager) CreateContainer(imageName, volumePath string) (
 			Image: imageName,
 		},
 		&container.HostConfig{
-			Binds:      []string{volumePath + ":/app"},
-			AutoRemove: true,
+			Binds: []string{volumePath + ":/app"},
 		}, nil, nil, "")
 
 	if err != nil {

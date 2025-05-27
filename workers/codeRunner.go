@@ -8,17 +8,12 @@ import (
 	"github.com/docker/docker/api/types/container"
 )
 
-var ResultsChannel = make(chan JobResult, 100)
-
 type codeRunner struct {
-	ID               int
-	Work             chan Job
-	WorkerQueue      chan chan Job
-	QuitChan         chan bool
+	job              Job
 	containerManager *containerManager
 }
 
-func CreateCodeRunner(id int, workerQueue chan chan Job) (*codeRunner, error) {
+func CreateCodeRunner(job Job) (*codeRunner, error) {
 	containerManager, err := CreateContainerManager()
 
 	if err != nil {
@@ -26,63 +21,39 @@ func CreateCodeRunner(id int, workerQueue chan chan Job) (*codeRunner, error) {
 	}
 
 	return &codeRunner{
-		ID:               id,
-		Work:             make(chan Job),
-		WorkerQueue:      workerQueue,
-		QuitChan:         make(chan bool),
+		job:              job,
 		containerManager: containerManager,
 	}, nil
 }
 
-func (cr *codeRunner) Start() {
-	go func() {
-		for {
-			cr.WorkerQueue <- cr.Work
-
-			select {
-			case job := <-cr.Work:
-				cr.RunCode(job)
-			case <-cr.QuitChan:
-				return
-			}
-		}
-	}()
-}
-
-func (cr *codeRunner) Stop() {
-	go func() {
-		cr.QuitChan <- true
-	}()
-}
-
-func (cr *codeRunner) RunCode(job Job) {
+func (cr *codeRunner) RunCode(outputChannel chan JobResult) {
 	filename := "test.py"
-	if job.Language == Java {
+	if cr.job.Language == Java {
 		filename = "Main.java"
 	}
 
-	tempDirPath, err := writeToTempFile(job.Code, filename)
+	tempDirPath, err := writeToTempFile(cr.job.Code, filename)
 
 	if err != nil {
-		ResultsChannel <- JobResult{ID: job.ID, Output: "", Error: err}
+		outputChannel <- JobResult{Output: "", Error: err}
 		return
 	}
 
 	defer os.RemoveAll(tempDirPath)
 
-	imageName := LanguageImageMap[job.Language]
+	imageName := LanguageImageMap[cr.job.Language]
 
 	resp, err := cr.containerManager.CreateContainer(imageName, tempDirPath)
 
 	if err != nil {
-		ResultsChannel <- JobResult{ID: job.ID, Output: "", Error: err}
+		outputChannel <- JobResult{Output: "", Error: err}
 		return
 	}
 
 	err = cr.containerManager.StartContainer(resp.ID)
 
 	if err != nil {
-		ResultsChannel <- JobResult{ID: job.ID, Output: "", Error: err}
+		outputChannel <- JobResult{Output: "", Error: err}
 		return
 	}
 
@@ -93,14 +64,14 @@ func (cr *codeRunner) RunCode(job Job) {
 	stdout, stderr, err := cr.containerManager.GetContainerOutputParsed(resp.ID)
 
 	if err != nil {
-		ResultsChannel <- JobResult{ID: job.ID, Output: "", Error: err}
+		outputChannel <- JobResult{Output: "", Error: err}
 		return
 	}
 
 	err = cr.containerManager.RemoveContainer(resp.ID)
 
 	if err != nil {
-		ResultsChannel <- JobResult{ID: job.ID, Output: "", Error: err}
+		outputChannel <- JobResult{Output: "", Error: err}
 		return
 	}
 
@@ -112,8 +83,8 @@ func (cr *codeRunner) RunCode(job Job) {
 	} else if stderr != "" {
 		output = stderr
 	}
-
-	ResultsChannel <- JobResult{ID: job.ID, Output: output, Error: nil}
+	fmt.Println(output)
+	outputChannel <- JobResult{Output: output, Error: nil}
 }
 
 func writeToTempFile(code string, filename string) (string, error) {
