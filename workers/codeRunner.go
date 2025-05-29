@@ -35,7 +35,7 @@ func (cr *codeRunner) RunCode(outputChannel chan JobResult) {
 	tempDirPath, err := writeToTempFile(cr.job.Code, filename)
 
 	if err != nil {
-		outputChannel <- JobResult{Output: "", Error: err}
+		outputChannel <- JobResult{Output: "", Error: err.Error()}
 		return
 	}
 
@@ -44,16 +44,15 @@ func (cr *codeRunner) RunCode(outputChannel chan JobResult) {
 	imageName := LanguageImageMap[cr.job.Language]
 
 	resp, err := cr.containerManager.CreateContainer(imageName, tempDirPath)
-
 	if err != nil {
-		outputChannel <- JobResult{Output: "", Error: err}
+		outputChannel <- JobResult{Output: "", Error: err.Error()}
 		return
 	}
 
 	err = cr.containerManager.StartContainer(resp.ID)
 
 	if err != nil {
-		outputChannel <- JobResult{Output: "", Error: err}
+		outputChannel <- JobResult{Output: "", Error: err.Error()}
 		return
 	}
 
@@ -64,14 +63,14 @@ func (cr *codeRunner) RunCode(outputChannel chan JobResult) {
 	stdout, stderr, err := cr.containerManager.GetContainerOutputParsed(resp.ID)
 
 	if err != nil {
-		outputChannel <- JobResult{Output: "", Error: err}
+		outputChannel <- JobResult{Output: "", Error: err.Error()}
 		return
 	}
 
 	err = cr.containerManager.RemoveContainer(resp.ID)
 
 	if err != nil {
-		outputChannel <- JobResult{Output: "", Error: err}
+		outputChannel <- JobResult{Output: "", Error: err.Error()}
 		return
 	}
 
@@ -84,7 +83,7 @@ func (cr *codeRunner) RunCode(outputChannel chan JobResult) {
 		output = stderr
 	}
 	fmt.Println(output)
-	outputChannel <- JobResult{Output: output, Error: nil}
+	outputChannel <- JobResult{Output: output, Error: ""}
 }
 
 func writeToTempFile(code string, filename string) (string, error) {

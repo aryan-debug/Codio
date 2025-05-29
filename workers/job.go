@@ -5,7 +5,14 @@ type Language int
 const (
 	Python Language = iota
 	Java
+	CPP
 )
+
+var LanguageMap = map[string]Language{
+	"python": Python,
+	"java":   Java,
+	"c++":    CPP,
+}
 
 var LanguageImageMap = map[Language]string{
 	Python: "python_runner",
@@ -13,8 +20,8 @@ var LanguageImageMap = map[Language]string{
 }
 
 type JobResult struct {
-	Output string
-	Error  error
+	Output string `json:"output"`
+	Error  string `json:"error"`
 }
 
 type Job struct {
