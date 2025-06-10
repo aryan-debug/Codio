@@ -71,11 +71,11 @@ const createTheme = ({variant, settings, styles}: Options): Extension => {
 				backgroundColor: settings.background,
 				color: settings.foreground,
 				borderRadius: "10px",
-				margin: "0 2em",
-				width: "65%",
+				width: "100%",
 				height: "83vh",
 				border: "1px solid #282828",
-				boxShadow: "0px 0px 35px 5px #0b0b0b;"
+				boxShadow: "0px 0px 35px 5px #0b0b0b",
+				fontSize: "1.2em"
 			},
 			'.cm-content': {
 				caretColor: settings.caret,

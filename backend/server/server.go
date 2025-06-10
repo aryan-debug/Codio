@@ -4,11 +4,15 @@ import (
 	"code_runner/workers"
 	"encoding/json"
 	"fmt"
-	"io"
 	"log/slog"
 	"net/http"
 	"os"
 )
+
+type jobRequest struct {
+	Language string
+	Code     string
+}
 
 type Server struct {
 	Server *http.ServeMux
@@ -29,15 +33,19 @@ func (server Server) addRouteHandlers() {
 
 func runCode(writer http.ResponseWriter, req *http.Request) {
 	writer.Header().Set("Content-Type", "application/json")
-
-	language := req.FormValue("language")
-	file_content := getFileContent(req, "file")
-	jobResult := runJob(workers.Job{Language: workers.LanguageMap[language], Code: string(file_content)})
+	var job jobRequest
+	err := json.NewDecoder(req.Body).Decode(&job)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(job.Code)
+	fmt.Println(job.Language)
+	jobResult := runJob(workers.Job{Language: workers.LanguageMap[job.Language], Code: job.Code})
 	fmt.Println(jobResult.Output)
 	fmt.Println(jobResult.Error)
 	content, _ := (json.Marshal(jobResult))
 	os.Stdout.Write(content)
-	err := json.NewEncoder(writer).Encode(jobResult)
+	err = json.NewEncoder(writer).Encode(jobResult)
 	if err != nil {
 		slog.Error(err.Error())
 	}
@@ -55,20 +63,4 @@ func runJob(job workers.Job) workers.JobResult {
 	go codeRunner.RunCode(outputChannel)
 	jobResult := <-outputChannel
 	return jobResult
-}
-
-func getFileContent(req *http.Request, key string) string {
-	file, _, err := req.FormFile(key)
-
-	if err != nil {
-		slog.Error(err.Error())
-	}
-
-	file_content, err := io.ReadAll(file)
-
-	if err != nil {
-		slog.Error(err.Error())
-	}
-
-	return string(file_content)
 }

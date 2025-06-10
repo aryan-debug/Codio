@@ -2,6 +2,19 @@
 	import Fa from '../../node_modules/svelte-fa/dist/fa.svelte';
 	import LanguageDropdown from './LanguageDropdown.svelte';
 	import { faPlay } from '@fortawesome/free-solid-svg-icons';
+	import { state } from '../store.svelte';
+
+	async function getOutput() {
+		const { code, language } = state;
+		const request = await fetch('http://localhost:8080/api/run', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ code, language })
+		});
+		state.result = await request.json();
+	}
 </script>
 
 <div class="header">
@@ -10,7 +23,7 @@
 	</div>
 	<div class="right">
 		<LanguageDropdown />
-		<button class="run-button" type="submit"><Fa icon={faPlay} /></button>
+		<button class="run-button" type="submit" on:click={getOutput}><Fa icon={faPlay} /></button>
 	</div>
 </div>
 
@@ -41,4 +54,3 @@
 		gap: 40px;
 	}
 </style>
-

@@ -4,7 +4,10 @@ go 1.23.0
 
 toolchain go1.23.9
 
-require github.com/docker/docker v28.1.1+incompatible
+require (
+	github.com/docker/docker v28.1.1+incompatible
+	github.com/rs/cors v1.11.1
+)
 
 require (
 	github.com/Microsoft/go-winio v0.4.14 // indirect

@@ -25,6 +25,6 @@ type JobResult struct {
 }
 
 type Job struct {
-	Language Language
-	Code     string
+	Language Language `json:"language"`
+	Code     string   `json:"code"`
 }

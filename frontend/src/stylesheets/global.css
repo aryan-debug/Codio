@@ -1,0 +1,9 @@
+:root {
+	--light-grey: #111;
+	--accent-color: #33bf69;
+	--font-inter: 'Inter', sans-serif;
+}
+
+body {
+  background-color: var(--light-grey);
+}

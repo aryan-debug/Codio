@@ -1,19 +1,17 @@
 <script>
 	import Editor from '../components/Editor.svelte';
 	import Header from '../components/Header.svelte';
+	import Terminal from '../components/Terminal.svelte';
 </script>
 
 <Header></Header>
-<Editor />
+<div class="main">
+	<Editor />
+	<Terminal />
+</div>
 
 <style>
-	:global(:root) {
-		--light-grey: #1a1a1a;
-		--accent-color: #33bf69;
-		--font-inter: 'Inter', sans-serif;
-	}
-
-	:global(body) {
-		background-color: var(--light-grey);
+	.main {
+		display: flex;
 	}
 </style>
