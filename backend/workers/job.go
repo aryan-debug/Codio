@@ -1,22 +1,23 @@
 package workers
 
-type Language int
-
-const (
-	Python Language = iota
-	Java
-	CPP
-)
-
-var LanguageMap = map[string]Language{
-	"python": Python,
-	"java":   Java,
-	"c++":    CPP,
+type LanguageInfo struct {
+	ImageName string
+	FileName  string
 }
 
-var LanguageImageMap = map[Language]string{
-	Python: "python_runner",
-	Java:   "java_runner",
+var LanguageMap = map[string]LanguageInfo{
+	"python": {
+		ImageName: "python_runner",
+		FileName:  "test.py",
+	},
+	"cpp": {
+		ImageName: "cpp_runner",
+		FileName:  "test.cpp",
+	},
+	"go": {
+		ImageName: "go_runner",
+		FileName:  "test.go",
+	},
 }
 
 type JobResult struct {
@@ -25,6 +26,6 @@ type JobResult struct {
 }
 
 type Job struct {
-	Language Language `json:"language"`
-	Code     string   `json:"code"`
+	Language string `json:"language"`
+	Code     string `json:"code"`
 }

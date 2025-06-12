@@ -27,11 +27,8 @@ func CreateCodeRunner(job Job) (*codeRunner, error) {
 }
 
 func (cr *codeRunner) RunCode(outputChannel chan JobResult) {
-	filename := "test.py"
-	if cr.job.Language == Java {
-		filename = "Main.java"
-	}
-
+	filename := LanguageMap[cr.job.Language].FileName
+	fmt.Println(filename)
 	tempDirPath, err := writeToTempFile(cr.job.Code, filename)
 
 	if err != nil {
@@ -41,8 +38,8 @@ func (cr *codeRunner) RunCode(outputChannel chan JobResult) {
 
 	defer os.RemoveAll(tempDirPath)
 
-	imageName := LanguageImageMap[cr.job.Language]
-
+	imageName := LanguageMap[cr.job.Language].ImageName
+	fmt.Println(imageName)
 	resp, err := cr.containerManager.CreateContainer(imageName, tempDirPath)
 	if err != nil {
 		outputChannel <- JobResult{Output: "", Error: err.Error()}

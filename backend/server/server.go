@@ -3,7 +3,6 @@ package server
 import (
 	"code_runner/workers"
 	"encoding/json"
-	"fmt"
 	"log/slog"
 	"net/http"
 	"os"
@@ -38,11 +37,7 @@ func runCode(writer http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(job.Code)
-	fmt.Println(job.Language)
-	jobResult := runJob(workers.Job{Language: workers.LanguageMap[job.Language], Code: job.Code})
-	fmt.Println(jobResult.Output)
-	fmt.Println(jobResult.Error)
+	jobResult := runJob(workers.Job{Language: job.Language, Code: job.Code})
 	content, _ := (json.Marshal(jobResult))
 	os.Stdout.Write(content)
 	err = json.NewEncoder(writer).Encode(jobResult)
