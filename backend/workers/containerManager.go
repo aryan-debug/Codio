@@ -4,6 +4,7 @@ import (
 	"context"
 	"io"
 	"strings"
+	"time"
 
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/client"
@@ -48,7 +49,9 @@ func (manager *containerManager) StartContainer(containerId string) error {
 }
 
 func (manager *containerManager) WaitForContainer(containerId string, callbackFn WaitContainerCallback) {
-	statusCh, errCh := manager.cli.ContainerWait(context.Background(), containerId, container.WaitConditionNotRunning)
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+	statusCh, errCh := manager.cli.ContainerWait(ctx, containerId, container.WaitConditionNotRunning)
 	callbackFn(statusCh, errCh)
 }
 

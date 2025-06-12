@@ -6,6 +6,7 @@ toolchain go1.23.9
 
 require (
 	github.com/docker/docker v28.1.1+incompatible
+	github.com/joho/godotenv v1.5.1
 	github.com/rs/cors v1.11.1
 )
 

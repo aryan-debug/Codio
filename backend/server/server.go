@@ -8,11 +8,6 @@ import (
 	"os"
 )
 
-type jobRequest struct {
-	Language string
-	Code     string
-}
-
 type Server struct {
 	Server *http.ServeMux
 }
@@ -30,9 +25,11 @@ func (server Server) addRouteHandlers() {
 	server.Server.HandleFunc("/api/run", runCode)
 }
 
+// Reads the language and code from the request and spawns a new job to execute the code
 func runCode(writer http.ResponseWriter, req *http.Request) {
 	writer.Header().Set("Content-Type", "application/json")
-	var job jobRequest
+
+	var job workers.Job
 	err := json.NewDecoder(req.Body).Decode(&job)
 	if err != nil {
 		panic(err)
@@ -46,6 +43,7 @@ func runCode(writer http.ResponseWriter, req *http.Request) {
 	}
 }
 
+// Creates a code runner, gives it a job and waits for it to finish
 func runJob(job workers.Job) workers.JobResult {
 	codeRunner, err := workers.CreateCodeRunner(job)
 
