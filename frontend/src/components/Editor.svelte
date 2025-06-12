@@ -1,7 +1,7 @@
 <script lang="ts">
-	import CodeMirror from '../../node_modules/svelte-codemirror-editor/dist/CodeMirror.svelte';
+	import CodeMirror from '$node_modules/svelte-codemirror-editor/dist/CodeMirror.svelte';
 	import { go } from '@codemirror/lang-go';
-	import { barf } from '../themes/modifiedBarf';
+	import { barf } from '$themes/modifiedBarf';
 	import { state } from '../store.svelte';
 </script>
 

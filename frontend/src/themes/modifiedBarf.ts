@@ -1,6 +1,7 @@
 import {tags as t} from '@lezer/highlight';
 import createTheme from "./createTheme.ts"
-// Author: unknown
+
+// Credit: https://github.com/vadimdemedes/thememirror/blob/main/source/themes/barf.ts
 export const barf = createTheme({
 	variant: 'dark',
 	settings: {

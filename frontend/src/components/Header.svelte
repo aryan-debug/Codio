@@ -1,12 +1,13 @@
 <script lang="ts">
-	import Fa from '../../node_modules/svelte-fa/dist/fa.svelte';
-	import LanguageDropdown from './LanguageDropdown.svelte';
+	import Fa from '$node_modules/svelte-fa/dist/fa.svelte';
+	import LanguageDropdown from '$components/LanguageDropdown.svelte';
 	import { faPlay } from '@fortawesome/free-solid-svg-icons';
 	import { state } from '../store.svelte';
+	import { PUBLIC_API_URL } from '$env/static/public';
 
 	async function getOutput() {
 		const { code, language } = state;
-		const request = await fetch('http://localhost:8080/api/run', {
+		const request = await fetch(`${PUBLIC_API_URL}/api/run`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'

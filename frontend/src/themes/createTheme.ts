@@ -7,6 +7,7 @@ import {
 	syntaxHighlighting,
 } from '@codemirror/language';
 
+// Credit: https://github.com/vadimdemedes/thememirror/blob/main/source/create-theme.ts
 interface Options {
 	/**
 	 * Theme variant. Determines which styles CodeMirror will apply by default.
@@ -73,7 +74,7 @@ const createTheme = ({variant, settings, styles}: Options): Extension => {
 				borderRadius: "10px",
 				width: "100%",
 				height: "83vh",
-				border: "1px solid #282828",
+				border: "1px solid var(--light-light-grey)",
 				boxShadow: "0px 0px 35px 5px #0b0b0b",
 				fontSize: "1.2em"
 			},

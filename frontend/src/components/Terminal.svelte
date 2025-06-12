@@ -8,7 +8,7 @@
 	.terminal {
 		flex: 1;
 		background-color: black;
-		border: 1px solid #282828;
+		border: 1px solid var(--light-light-grey);
 		border-radius: 10px;
 		margin: 0 2em 0 0;
 		color: white;

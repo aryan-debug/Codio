@@ -5,5 +5,5 @@ export default defineConfig({
 	plugins: [sveltekit()],
 	optimizeDeps: {
         exclude: ["svelte-codemirror-editor", "codemirror", "@codemirror/*"]
-    }
+  },
 });
