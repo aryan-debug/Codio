@@ -1,2 +1,20 @@
 # Codio
-A web app that can run multiple languages
+A web app that can run multiple languages (Python, Golang, C++ for now)
+
+## Technologies Used
+- SvelteKit
+- Golang
+- TypeScript
+- Docker
+
+## How it Works
+1. The backend recieves the code and one of the supported languages.
+2. It writes the code to a temporary file, which is then mounted on a Docker container
+3. Depending on the language, the appropriate container runs and executes the code in the file
+4. If the code times out, then it stops the container and removes it
+5. Otherwise, send the output via a Go channel and remove the container
+
+## Security Considerations
+
+The website is not fully tested. The only security precaution I have taken is to not let the containers run for a long period of time to prevent crypto-mining.
+I also don't really plan to make it public (unless you are a recruiter ;) then you have access to it).
